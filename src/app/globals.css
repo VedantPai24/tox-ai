@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background-gray;
+  }
+}
+
+@layer utilities {
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px) translateX(0px) rotate(0deg);
+    }
+    25% {
+      transform: translateY(-40px) translateX(15px) rotate(10deg);
+    }
+    50% {
+      transform: translateY(-50px) translateX(-10px) rotate(-8deg);
+    }
+    75% {
+      transform: translateY(-30px) translateX(-15px) rotate(10deg);
+    }
+  }
+
+  @keyframes float-delayed {
+    0%, 100% {
+      transform: translateY(0px) translateX(0px) rotate(0deg);
+    }
+    25% {
+      transform: translateY(-45px) translateX(-15px) rotate(-10deg);
+    }
+    50% {
+      transform: translateY(-55px) translateX(10px) rotate(8deg);
+    }
+    75% {
+      transform: translateY(-35px) translateX(15px) rotate(-10deg);
+    }
+  }
+
+  @keyframes float-slow {
+    0%, 100% {
+      transform: translateY(0px) translateX(0px) rotate(0deg);
+    }
+    33% {
+      transform: translateY(-35px) translateX(12px) rotate(8deg);
+    }
+    66% {
+      transform: translateY(-45px) translateX(-12px) rotate(-8deg);
+    }
+  }
+
+  .animate-float {
+    animation: float 10s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-float-delayed {
+    animation: float-delayed 12s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-float-slow {
+    animation: float-slow 14s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Respect user's motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-float,
+    .animate-float-delayed,
+    .animate-float-slow {
+      animation: none;
+    }
+  }
+}
+

@@ -1,0 +1,457 @@
+# ToxAI - AI-Powered Toxicity Prediction Platform
+
+## Tech Stack
+
+**Core Technologies:**
+- **Next.js 15.0** - React framework with App Router
+- **React 19.0** - UI framework
+- **TypeScript 5.6** - Type safety
+- **Tailwind CSS 3.4** - Utility-first styling
+- **Bun** - Package manager and runtime (optional)
+
+**State Management & Forms:**
+- **Zustand 5.0** - Global state management
+- **TanStack Query 5.0** - Server state management
+- **React Hook Form 7.50** - Form state management
+- **Zod 3.23** - Schema validation
+
+**Authentication:**
+- **NextAuth.js 5.0** - Authentication framework
+
+**Utilities:**
+- **Axios 1.7** - HTTP client
+- **clsx 2.1** - Conditional class names
+
+**Development Tools:**
+- **ESLint 9.0** - Code linting
+- **Prettier 3.3** - Code formatting
+- **Husky 9.0** - Git hooks
+- **Playwright** - E2E testing
+- **Testing Library** - Component testing
+
+---
+
+## Project Structure
+/src
+/app # Next.js App Router
+/api # API routes
+/sign-in # Sign-in page route
+/sign-up # Sign-up page route
+error.tsx # Error boundary for app routes
+global-error.tsx # Root error boundary
+layout.tsx # Root layout
+loading.tsx # Loading UI
+not-found.tsx # 404 page
+page.tsx # Home page (/)
+globals.css # Global styles
+/components
+/icons # Icon components (memoized)
+index.ts # Barrel export
+AuthNavbar.tsx # Authentication navbar
+ChemicalBackground.tsx # Background animation component
+/hooks # Custom React hooks (future)
+/lib # Utility libraries and configurations
+/types # TypeScript type definitions
+index.ts # Shared types
+/snippets # Code snippets
+
+
+---
+
+## Coding Standards
+
+### TypeScript
+- Use **strict mode** (enabled in tsconfig.json)
+- Define interfaces/types for all props and data structures
+- Use `type` for unions/intersections, `interface` for object shapes
+- Avoid `any` - use `unknown` if type is truly unknown
+- Use proper return types for functions
+- Prefer `Readonly<>` for props when appropriate
+
+### Next.js App Router
+- Use **Server Components** by default (no "use client" unless needed)
+- Add `"use client"` directive only when:
+  - Using React hooks (useState, useEffect, etc.)
+  - Using browser APIs
+  - Using event handlers
+  - Using context providers
+- Use `async/await` for Server Components that fetch data
+- Export `metadata` object for SEO in page/layout files
+- Use `generateMetadata` for dynamic metadata
+
+### React Components
+- Use **function components** with hooks only
+- Keep components **small and focused** (single responsibility)
+- Extract complex logic into custom hooks
+- Use composition over prop drilling
+- Implement proper error boundaries (`error.tsx`, `global-error.tsx`)
+- Use `React.memo()` for expensive components (especially icons)
+- Add `displayName` to memoized components
+
+### State Management
+- Use **Zustand** for global client state
+- Use **TanStack Query** for server state and data fetching
+- Use local state (`useState`) for component-specific data
+- Use `useReducer` for complex state logic
+- Use React Hook Form for form state management
+
+### File Organization
+- Group related functionality together
+- Keep page components in `/app` route folders
+- Extract reusable components to `/components`
+- Store icons in `/components/icons` with barrel exports
+- Store business logic in `/lib` when implemented
+- Keep types close to usage, common types in `/types`
+
+---
+
+## Naming Conventions
+
+### Files
+- **React Components:** `PascalCase.tsx` (e.g., `AuthNavbar.tsx`)
+- **Pages:** `page.tsx`, `layout.tsx`, `error.tsx` (Next.js conventions)
+- **Utilities:** `kebab-case.ts` (e.g., `string-helpers.ts`)
+- **Hooks:** `use-kebab-case.ts` or `useCamelCase.ts`
+- **Types:** `kebab-case.types.ts` or inline in component files
+- **Constants:** `kebab-case.constants.ts`
+- **Icons:** `PascalCase.tsx` (e.g., `LogoIcon.tsx`)
+
+### Code
+- **Components:** `PascalCase` (e.g., `AuthNavbar`, `SignUpPage`)
+- **Variables/Functions:** `camelCase` (e.g., `handleSubmit`, `isSubmitting`)
+- **Constants:** `UPPER_SNAKE_CASE` (e.g., `API_BASE_URL`)
+- **Types/Interfaces:** `PascalCase` (e.g., `UserProfile`, `FormData`)
+- **CSS Classes:** `kebab-case` (Tailwind utilities)
+- **Props Interfaces:** Component name + `Props` (e.g., `AuthNavbarProps`)
+
+---
+
+## Styling Guidelines
+
+### Tailwind CSS
+- Use Tailwind utility classes as primary styling method
+- Custom colors defined in `tailwind.config.ts`:
+  - `primary-blue`: `#0A157A`
+  - `background-gray`: `#F6F6F9`
+  - `box-bg`: `#E5E7EB`
+  - `box-border`: `#C8C8D2`
+  - `heading-blue`: `#16215E`
+  - `body-gray`: `#808080`
+  - `text-black`: `#141414`
+  - `section-heading`: `#5F7693`
+  - `button-blue`: `#0A1464`
+- Use responsive utilities: `sm:`, `md:`, `lg:`, `xl:`
+- Mobile-first approach
+
+### Responsive Design
+- Mobile-first approach
+- Test on multiple breakpoints: 360px, 414px, 768px, 1024px, 1280px
+- Use responsive utilities: `sm:`, `md:`, `lg:`, `xl:`
+- Ensure touch-friendly interfaces (min 48px for buttons)
+- Use `min-h-[48px]` for button heights
+
+### CSS Animations
+- Define keyframes in `globals.css` using `@layer utilities`
+- Use `prefers-reduced-motion` media query for accessibility
+- Apply animations via Tailwind classes (e.g., `animate-float`)
+
+---
+
+## Component Development
+
+### Best Practices
+1. **Props:** Always define TypeScript interface
+2. **State:** Keep local, lift only when needed
+3. **Effects:** Use `useEffect` with proper dependencies
+4. **Memoization:** Use `React.memo` for icons and expensive components
+5. **Accessibility:** Use semantic HTML and ARIA labels
+6. **Forms:** Use React Hook Form with Zod validation
+7. **Loading States:** Always show loading indicators during async operations
+8. **Error Handling:** Implement try-catch blocks and error boundaries
+
+### Component Structure Example
+"use client"; // Only if needed
+
+import { useState } from 'react';
+import { LogoIcon } from '@/components/icons';
+
+interface MyComponentProps {
+  title: string;
+  onSubmit: (data: FormData) => void;
+}
+
+export default function MyComponent({ title, onSubmit }: MyComponentProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState<FormData>({});
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await onSubmit(formData);
+    } catch (error) {
+      // Handle error
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="p-4">
+      {/* JSX here */}
+    </div>
+  );
+}### Icon Components Pattern
+import React from 'react';
+
+const MyIcon = React.memo(() => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={2}
+    stroke="currentColor"
+    className="w-5 h-5"
+    aria-hidden="true"
+  >
+    {/* SVG paths */}
+  </svg>
+));
+
+MyIcon.displayName = 'MyIcon';
+
+export default MyIcon;---
+
+## Next.js App Router Conventions
+
+### Special Files
+- `page.tsx` - Defines the route UI
+- `layout.tsx` - Shared layout for route segment
+- `error.tsx` - Error boundary for route segment
+- `global-error.tsx` - Root error boundary (must be at app root)
+- `loading.tsx` - Loading UI for route segment
+- `not-found.tsx` - 404 UI for route segment
+- `route.ts` - API route handler
+
+### Client vs Server Components
+- **Default:** Server Components (no "use client")
+- **Use Client Components when:**
+  - Using hooks (useState, useEffect, useContext, etc.)
+  - Using browser APIs (window, document, localStorage, etc.)
+  - Using event handlers (onClick, onChange, etc.)
+  - Using context providers
+  - Using third-party libraries that require client-side
+
+### Metadata
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Page Title',
+  description: 'Page description',
+};---
+
+## Path Aliases
+
+Configured in `tsconfig.json`:t
+@/*        →   ./src/***Usage:**ript
+import { LogoIcon } from '@/components/icons';
+import AuthNavbar from '@/components/AuthNavbar';
+import { UserType } from '@/types';---
+
+## Form Handling
+
+### React Hook Form + Zod
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
+const schema = z.object({
+  email: z.string().email('Invalid email'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+});
+
+type FormData = z.infer<typeof schema>;
+
+export default function MyForm() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = async (data: FormData) => {
+    // Handle submission
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      {/* Form fields */}
+    </form>
+  );
+}---
+
+## Important Commands
+
+# Development
+Bun run dev              # Start dev server (port 3000)
+bun run build            # Production build
+bun run start            # Start production server
+bun run lint             # Run ESLint
+bun run type-check       # TypeScript type checking
+bun run format           # Format code with Prettier
+bun run format:check     # Check formatting
+
+# Testing
+bun run test             # Run tests
+bun run test:e2e         # Run E2E tests with Playwright---
+
+## State Management Patterns
+
+### Zustand Store Example
+import { create } from 'zustand';
+
+interface StoreState {
+  count: number;
+  increment: () => void;
+}
+
+export const useStore = create<StoreState>((set) => ({
+  count: 0,
+  increment: () => set((state) => ({ count: state.count + 1 })),
+}));### TanStack Query Example
+import { useQuery } from '@tanstack/react-query';
+
+export function useUserData(userId: string) {
+  return useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => fetchUser(userId),
+  });
+}---
+
+## Error Handling
+
+### Error Boundaries
+- Use `error.tsx` for route-level errors
+- Use `global-error.tsx` for root-level errors
+- Always provide a reset function
+- Use design system colors (e.g., `bg-primary-blue`)
+
+### Async Error Handling
+try {
+  await asyncOperation();
+} catch (error) {
+  // Handle error appropriately
+  console.error('Error:', error);
+  // Show user-friendly error message
+}---
+
+## Accessibility Guidelines
+
+- Use semantic HTML elements
+- Ensure keyboard navigation works
+- Add ARIA labels where needed (`aria-label`, `aria-hidden`)
+- Maintain color contrast ratios (WCAG AA)
+- Support screen readers
+- Implement focus indicators
+- Respect `prefers-reduced-motion` for animations
+- Use proper heading hierarchy (h1, h2, h3, etc.)
+
+---
+
+## Performance Optimization
+
+- Use `React.memo()` for expensive components
+- Use functional updates for state (`setState(prev => ...)`)
+- Avoid unnecessary re-renders
+- Lazy load heavy components when possible
+- Optimize images with Next.js Image component
+- Use `useMemo` and `useCallback` for expensive operations
+- Implement pagination for large lists
+- Debounce search inputs
+
+---
+
+## Code Quality
+
+### Before Committing
+1. ✅ Run TypeScript checks (`bun run type-check`)
+2. ✅ Run ESLint (`bun run lint`)
+3. ✅ Check formatting (`bun run format:check`)
+4. ✅ Test in browser
+5. ✅ Check responsive layouts
+6. ✅ Verify no console errors
+7. ✅ Remove console.log statements (or wrap in dev check)
+
+### Code Standards
+- Write self-documenting code
+- Add comments for complex logic only
+- Follow DRY principle
+- Keep functions small (< 50 lines ideal)
+- Extract magic numbers to constants
+- Remove unused imports and variables
+
+---
+
+## Security Best Practices
+
+- Never commit sensitive data (use environment variables)
+- Sanitize user inputs
+- Validate on both client and server
+- Use HTTPS in production
+- Implement CSRF protection
+- Use NextAuth.js for authentication
+- Never expose API keys or secrets
+
+---
+
+## Git Workflow
+
+### Commit Messages
+Follow Conventional Commits:
+- `feat:` New features
+- `fix:` Bug fixes
+- `refactor:` Code restructuring
+- `style:` Formatting changes
+- `docs:` Documentation updates
+- `chore:` Build/tooling changes
+- `perf:` Performance improvements
+- `test:` Adding tests
+
+### Branching
+- `main` - Production-ready code
+- `develop` - Integration branch
+- `feature/*` - New features
+- `fix/*` - Bug fixes
+- `refactor/*` - Code improvements
+
+---
+
+## Browser Support
+
+**Target Browsers:**
+- Chrome (latest 2 versions)
+- Firefox (latest 2 versions)
+- Safari (latest 2 versions)
+- Edge (latest 2 versions)
+
+**Mobile:**
+- iOS Safari (latest)
+- Chrome Mobile (latest)
+
+---
+
+## Notes
+
+- Project uses **Next.js App Router** (not Pages Router)
+- **Server Components** are default (use "use client" only when needed)
+- **Tailwind CSS** for styling with custom color palette
+- **Path aliases** (`@/`) configured for cleaner imports
+- **TypeScript strict mode** enabled
+- **React 19** with latest features
+- **Zustand** for global state management
+- **TanStack Query** for server state
+- **React Hook Form + Zod** for form validation
+- Follows **mobile-first** responsive design
+- Custom **Tailwind configuration** with design system colors
